@@ -93,23 +93,19 @@ print(order_details)
 print("----------------End Order Details Data----------------")
 
 # STEP 8
-# Calculate the total sum of rounded item prices (priceEach * quantityOrdered)
+# Find total amount for all orders as sum of rounded total prices
 sum_total_price = pd.read_sql("""
-    SELECT SUM(ROUND(priceEach * quantityOrdered)) AS total_price 
+    SELECT ROUND(priceEach * quantityOrdered) AS total_price 
     FROM orderDetails
-""", conn)
+""", conn)["total_price"].sum()
 
 # STEP 9
-# Return original orderDate followed by 'day', 'month', and 'year'
+# Query orderDate from the 'orders' table (not orderDetails)
 df_day_month_year = pd.read_sql("""
     SELECT 
         orderDate,
         STRFTIME('%d', orderDate) AS day,
         STRFTIME('%m', orderDate) AS month,
         STRFTIME('%Y', orderDate) AS year
-    FROM orderDetails
+    FROM orders
 """, conn)
-
-
-# Close database connection
-conn.close()
